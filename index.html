@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Class Hierarchy Demo</title>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <!-- React and ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel Standalone for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Your application code -->
+    <script type="text/babel">
+        // Base class for Person
+        class Person {
+          constructor(name, age, address) {
+            this.name = name;
+            this.age = age;
+            this.address = address;
+          }
+
+          getDetails() {
+            return `Name: ${this.name}, Age: ${this.age}, Address: ${this.address}`;
+          }
+
+          getRole() {
+            return 'Person';
+          }
+
+          // Common method
+          introduce() {
+            return `Hello, I'm ${this.name} and I'm ${this.age} years old.`;
+          }
+        }
+
+        // Student class inherits from Person
+        class Student extends Person {
+          constructor(name, age, address, studentId, grade) {
+            super(name, age, address);
+            this.studentId = studentId;
+            this.grade = grade;
+          }
+
+          getDetails() {
+            return `${super.getDetails()}, Student ID: ${this.studentId}, Grade: ${this.grade}`;
+          }
+
+          getRole() {
+            return 'Student';
+          }
+
+          study() {
+            return `${this.name} is currently preparing for ${this.grade} grade exams.`;
+          }
+        }
+
+        // Teacher class extends Person
+        class Teacher extends Person {
+          constructor(name, age, address, employeeId, subject) {
+            super(name, age, address);
+            this.employeeId = employeeId;
+            this.subject = subject;
+          }
+
+          getDetails() {
+            return `${super.getDetails()}, Employee ID: ${this.employeeId}, Subject: ${this.subject}`;
+          }
+
+          getRole() {
+            return 'Teacher';
+          }
+
+          teach() {
+            return `${this.name} teaches ${this.subject} to students.`;
+          }
+        }
+
+        // React Component to display Person instances
+        const PersonCard = ({ person }) => {
+          const getRoleColor = (role) => {
+            switch(role) {
+              case 'Student': return '#4CAF50';
+              case 'Teacher': return '#2196F3';
+              default: return '#9E9E9E';
+            }
+          };
+
+          return (
+            <div style={{
+              border: '2px solid #ddd',
+              borderRadius: '8px',
+              padding: '20px',
+              margin: '15px',
+              backgroundColor: '#f9f9f9',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              maxWidth: '400px'
+            }}>
+              <div style={{
+                backgroundColor: getRoleColor(person.getRole()),
+                color: 'white',
+                padding: '8px 15px',
+                borderRadius: '5px',
+                marginBottom: '15px',
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}>
+                {person.getRole()}
+              </div>
+              
+              <h3 style={{ margin: '10px 0', color: '#333' }}>{person.name}</h3>
+              
+              <div style={{ 
+                backgroundColor: 'white', 
+                padding: '15px', 
+                borderRadius: '5px',
+                marginBottom: '10px'
+              }}>
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                  <strong>Details:</strong> {person.getDetails()}
+                </p>
+                <p style={{ margin: '5px 0', fontSize: '14px', fontStyle: 'italic' }}>
+                  {person.introduce()}
+                </p>
+                
+                {person instanceof Student && (
+                  <p style={{ margin: '5px 0', fontSize: '14px', color: '#4CAF50' }}>
+                    <strong>Activity:</strong> {person.study()}
+                  </p>
+                )}
+                
+                {person instanceof Teacher && (
+                  <p style={{ margin: '5px 0', fontSize: '14px', color: '#2196F3' }}>
+                    <strong>Activity:</strong> {person.teach()}
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        };
+
+        // Main App Component
+        const App = () => {
+          // Array of different person types - demonstrates polymorphism
+          const people = [
+            new Person('Ramesh Kumar', 45, 'MG Road, Bangalore'),
+            new Student('Priya Sharma', 16, 'Koramangala, Bangalore', 'STU001', '10th'),
+            new Student('Arjun Patel', 17, 'Whitefield, Bangalore', 'STU002', '11th'),
+            new Teacher('Dr. Kavita Menon', 38, 'Indiranagar, Bangalore', 'EMP001', 'Mathematics'),
+            new Teacher('Prof. Rajesh Iyer', 42, 'Jayanagar, Bangalore', 'EMP002', 'Physics')
+          ];
+
+          return (
+            <div style={{
+              fontFamily: 'Arial, sans-serif',
+              padding: '20px',
+              backgroundColor: '#f0f0f0',
+              minHeight: '100vh'
+            }}>
+              <header style={{
+                textAlign: 'center',
+                marginBottom: '30px',
+                backgroundColor: 'white',
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <h1 style={{ color: '#333', margin: '10px 0' }}>
+                  Class Hierarchy Demo
+                </h1>
+                <p style={{ color: '#666', fontSize: '16px' }}>
+                  OOP Concepts: Inheritance, Method Overriding & Polymorphism
+                </p>
+              </header>
+
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: '10px'
+              }}>
+                {people.map((person, index) => (
+                  <PersonCard key={index} person={person} />
+                ))}
+              </div>
+
+              <footer style={{
+                textAlign: 'center',
+                marginTop: '30px',
+                padding: '15px',
+                backgroundColor: 'white',
+                borderRadius: '10px',
+                color: '#666'
+              }}>
+                <h3>Key Concepts Demonstrated:</h3>
+                <ul style={{ 
+                  listStyle: 'none', 
+                  padding: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '20px',
+                  flexWrap: 'wrap'
+                }}>
+                  <li>✓ Inheritance (extends)</li>
+                  <li>✓ Method Overriding (getDetails, getRole)</li>
+                  <li>✓ Polymorphism (Array of Person types)</li>
+                  <li>✓ Super keyword</li>
+                  <li>✓ instanceof operator</li>
+                </ul>
+              </footer>
+            </div>
+          );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
